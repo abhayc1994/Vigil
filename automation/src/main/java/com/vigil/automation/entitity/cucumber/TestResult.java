@@ -1,7 +1,5 @@
-
 package com.vigil.automation.entitity.cucumber;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,18 +11,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document(collection = "results")
-public class TestResult implements Serializable {
-
-   @Id
-   private String objectID;
-   private Integer line;
-   private ArrayList<Element> elements = null;
-   private String name;
-   private String description;
-   private String id;
-   private String keyword;
-   private String uri;
-   public ArrayList<Tag> tags;
-   private String featureID;
-   private String buildNumber;
+public class TestResult {
+    @Id
+    private String objectID;
+    public int line;
+    public ArrayList<Element> elements;
+    public String name;
+    public String description;
+    public String id;
+    public String keyword;
+    public String uri;
+    public ArrayList<Tag> tags;
+    private String featureID;
+    private String buildNumber;
 }

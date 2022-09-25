@@ -6,7 +6,7 @@ Feature: Onboarding sa
     Given user logged into Onboarding
 
   @ONBRD1225 @Smoke @Deposit @REG_ONBRD_1225_TC_0001
-  Scenario: REG_ONBRD_1225_TC_0001
+  Scenario Outline: REG_ONBRD_1225_TC_0001
     Given User is Starting to create a Product
     When user creates a Deposit product with specfications and Clicks create
       | ProductLine | ProductType          | CustomerType | ProductName                   |
@@ -14,11 +14,6 @@ Feature: Onboarding sa
     And Fills the Details for the Individual Information
     Then Product should be added in OnBoarding results Table
     And User should be able to Complete Verifications and Create account
-
-  @OnBoardingApi @Regression
-  Scenario Outline: Product Types s
-    When user sends request for get Product types
-    Then type of Product should be Returned according to the Query Params productLine as '<productLine>'  and custType as '<custType>'
     @Regres
     Examples:
       | productLine | custType   |
@@ -28,7 +23,7 @@ Feature: Onboarding sa
       | DEPOSIT     | Consumer   |
 
   @OnBoardingApi @Regression
-  Scenario Outline: Product Types swe
+  Scenario Outline: Product Types s
     When user sends request for get Product types
     Then type of Product should be Returned according to the Query Params productLine as '<productLine>'  and custType as '<custType>'
     @Regres

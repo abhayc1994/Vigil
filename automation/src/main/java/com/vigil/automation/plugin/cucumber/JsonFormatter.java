@@ -12,7 +12,9 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.sun.xml.stream.writers.UTF8OutputStreamWriter;
+import com.vigil.automation.entitity.cucumber.Location;
 import com.vigil.automation.entitity.cucumber.TestResult;
 import io.cucumber.core.exception.ExceptionUtils;
 import io.cucumber.messages.types.Background;
@@ -91,6 +93,7 @@ public class JsonFormatter implements EventListener {
 	  JsonFactory jsonFactory = new JsonFactory();
 	  jsonFactory.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 	  mapper = new ObjectMapper(jsonFactory);
+	  mapper.registerModule(new Jdk8Module());
 	  mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
    }
 
@@ -124,6 +127,7 @@ public class JsonFormatter implements EventListener {
    private List<TestResult> updateIDs() {
 	  return this.featureMaps.stream().map(fmap -> {
 		 TestResult results = mapper.convertValue(fmap, TestResult.class);
+		 Location re=results.getTags().get(0).location;
 		 String hex = generateHex(results.getUri().toString());
 		 results.setBuildNumber(buildNumber);
 		 results.setFeatureID(hex);
