@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.sun.xml.stream.writers.UTF8OutputStreamWriter;
-import com.vigil.automation.entitity.cucumber.Location;
 import com.vigil.automation.entitity.cucumber.TestResult;
 import io.cucumber.core.exception.ExceptionUtils;
 import io.cucumber.messages.types.Background;
@@ -61,6 +60,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -87,6 +87,8 @@ public class JsonFormatter implements EventListener {
    ;
    private static final String runID = null;
    private static String buildNumber = "1";
+   private static final String user="vigil";
+   private static final String password="vigil@123";
 
    public JsonFormatter(OutputStream out) {
 	  this.writer = new UTF8OutputStreamWriter(out);
@@ -127,7 +129,6 @@ public class JsonFormatter implements EventListener {
    private List<TestResult> updateIDs() {
 	  return this.featureMaps.stream().map(fmap -> {
 		 TestResult results = mapper.convertValue(fmap, TestResult.class);
-		 Location re=results.getTags().get(0).location;
 		 String hex = generateHex(results.getUri().toString());
 		 results.setBuildNumber(buildNumber);
 		 results.setFeatureID(hex);
@@ -147,7 +148,9 @@ public class JsonFormatter implements EventListener {
 
    private synchronized void pushResult(String results) throws IOException {
 	  HttpClient client = HttpClients.createDefault();
+	  String encoding = Base64.getEncoder().encodeToString((user + ":" + password).getBytes());
 	  HttpPost httpPost = new HttpPost(uri);
+	  httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
 	  HttpEntity entity = new StringEntity(results, ContentType.APPLICATION_JSON);
 	  httpPost.setEntity(entity);
 	  HttpResponse response = client.execute(httpPost);
