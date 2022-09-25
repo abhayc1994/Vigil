@@ -1,11 +1,13 @@
-
 package com.vigil.automation.entitity.cucumber;
 
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public class Result implements Serializable {
-
-   public Integer duration;
-   public String status;
-
+@Getter
+@Setter
+@NoArgsConstructor
+public class Result{
+    public int duration;
+    public String status;
 }
