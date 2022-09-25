@@ -41,4 +41,9 @@ public class ResultsController {
 	  return service.save(result);
    }
 
+   @GetMapping(value = "/getAllModuleList")
+   public List<String> getAllModuleList() {
+	  logger.info("Getting List of All Modules");
+	  return service.getAllModuleNamesList();
+   }
 }

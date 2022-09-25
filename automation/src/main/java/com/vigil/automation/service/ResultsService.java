@@ -14,7 +14,9 @@ public interface ResultsService {
    List<TestResult> getAllResults();
 
    Optional<TestResult> getResultByBuildNumberAndFeatureId(String buildNumber,
-	   String featureID);
+       String featureID);
 
    TestResult findResultsById(String resultId) throws ResourceNotFoundException;
+
+   List<String> getAllModuleNamesList();
 }

@@ -1,6 +1,7 @@
 package com.vigil.automation.repositories;
 
 import com.vigil.automation.entity.cucumber.TestResult;
+import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface TestResultsRepository extends MongoRepository<TestResult, String> {
@@ -8,5 +9,7 @@ public interface TestResultsRepository extends MongoRepository<TestResult, Strin
    TestResult findResultsById(String id);
 
    TestResult findFirstByBuildNumberAndFeatureID(String buildNumber,String featureID);
+
+
 }
 
