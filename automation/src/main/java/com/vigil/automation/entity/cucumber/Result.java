@@ -1,4 +1,4 @@
-package com.vigil.automation.entitity.cucumber;
+package com.vigil.automation.entity.cucumber;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

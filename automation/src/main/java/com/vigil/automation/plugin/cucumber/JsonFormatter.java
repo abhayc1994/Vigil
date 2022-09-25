@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.sun.xml.stream.writers.UTF8OutputStreamWriter;
-import com.vigil.automation.entitity.cucumber.TestResult;
+import com.vigil.automation.entity.cucumber.TestResult;
 import io.cucumber.core.exception.ExceptionUtils;
 import io.cucumber.messages.types.Background;
 import io.cucumber.messages.types.Feature;
@@ -52,12 +52,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -72,23 +70,25 @@ public class JsonFormatter implements EventListener {
 
    private static final String before = "before";
    private static final String after = "after";
-   private final List<Map<String, Object>> featureMaps = new ArrayList();
-   private final Map<String, Object> currentBeforeStepHookList = new HashMap();
+   private final List<LinkedHashMap<String, Object>> featureMaps = new ArrayList();
+   private final LinkedHashMap<String, Object> currentBeforeStepHookList = new LinkedHashMap();
    private final Writer writer;
    private final TestSourcesModel testSources = new TestSourcesModel();
    private final ObjectMapper mapper;
    private URI currentFeatureFile;
-   private List<Map<String, Object>> currentElementsList;
-   private Map<String, Object> currentElementMap;
-   private Map<String, Object> currentTestCaseMap;
-   private List<Map<String, Object>> currentStepsList;
-   private Map<String, Object> currentStepOrHookMap;
+   private List<LinkedHashMap<String, Object>> currentElementsList;
+   private LinkedHashMap<String, Object> currentElementMap;
+   private LinkedHashMap<String, Object> currentTestCaseMap;
+   private List<LinkedHashMap<String, Object>> currentStepsList;
+   private LinkedHashMap<String, Object> currentStepOrHookMap;
    private static final String uri = "http://localhost:8080/results/create";
    ;
    private static final String runID = null;
    private static String buildNumber = "1";
-   private static final String user="vigil";
-   private static final String password="vigil@123";
+   private static final String user = "vigil";
+   private static final String password = "vigil@123";
+
+   private static final String moduleName = "Actions";
 
    public JsonFormatter(OutputStream out) {
 	  this.writer = new UTF8OutputStreamWriter(out);
@@ -115,7 +115,7 @@ public class JsonFormatter implements EventListener {
 	  if (exception != null) {
 		 this.featureMaps.add(this.createDummyFeatureForFailure(event));
 	  }
-	  List<Map<String, Object>> maps = this.featureMaps;
+	  List<LinkedHashMap<String, Object>> maps = this.featureMaps;
 	  List<TestResult> results = updateIDs();
 	  results.forEach(result -> {
 		 try {
@@ -132,6 +132,7 @@ public class JsonFormatter implements EventListener {
 		 String hex = generateHex(results.getUri().toString());
 		 results.setBuildNumber(buildNumber);
 		 results.setFeatureID(hex);
+		 results.setModuleName(moduleName);
 		 return results;
 	  }).collect(Collectors.toList());
 
@@ -165,7 +166,8 @@ public class JsonFormatter implements EventListener {
 	  if (this.currentFeatureFile == null || !this.currentFeatureFile.equals(
 		  event.getTestCase().getUri())) {
 		 this.currentFeatureFile = event.getTestCase().getUri();
-		 Map<String, Object> currentFeatureMap = this.createFeatureMap(event.getTestCase());
+		 LinkedHashMap<String, Object> currentFeatureMap = this.createFeatureMap(
+			 event.getTestCase());
 		 this.featureMaps.add(currentFeatureMap);
 		 this.currentElementsList = (List) currentFeatureMap.get("elements");
 	  }
@@ -227,8 +229,8 @@ public class JsonFormatter implements EventListener {
 	  }
    }
 
-   private Map<String, Object> createFeatureMap(TestCase testCase) {
-	  Map<String, Object> featureMap = new HashMap();
+   private LinkedHashMap<String, Object> createFeatureMap(TestCase testCase) {
+	  LinkedHashMap<String, Object> featureMap = new LinkedHashMap();
 	  featureMap.put("uri", TestSourcesModel.relativize(testCase.getUri()));
 	  featureMap.put("elements", new ArrayList());
 	  Feature feature = this.testSources.getFeature(testCase.getUri());
@@ -240,10 +242,10 @@ public class JsonFormatter implements EventListener {
 		 featureMap.put("line", feature.getLocation().getLine());
 		 featureMap.put("id", TestSourcesModel.convertToId(feature.getName()));
 		 featureMap.put("tags", feature.getTags().stream().map((tag) -> {
-			Map<String, Object> json = new LinkedHashMap();
+			LinkedHashMap<String, Object> json = new LinkedHashMap();
 			json.put("name", tag.getName());
 			json.put("type", "Tag");
-			Map<String, Object> location = new LinkedHashMap();
+			LinkedHashMap<String, Object> location = new LinkedHashMap();
 			location.put("line", tag.getLocation().getLine());
 			location.put("column", tag.getLocation().getColumn());
 			json.put("location", location);
@@ -253,8 +255,8 @@ public class JsonFormatter implements EventListener {
 	  return featureMap;
    }
 
-   private Map<String, Object> createTestCase(TestCaseStarted event) {
-	  Map<String, Object> testCaseMap = new HashMap();
+   private LinkedHashMap<String, Object> createTestCase(TestCaseStarted event) {
+	  LinkedHashMap<String, Object> testCaseMap = new LinkedHashMap();
 	  testCaseMap.put("start_timestamp", this.getDateTimeFromTimeStamp(event.getInstant()));
 	  TestCase testCase = event.getTestCase();
 	  testCaseMap.put("name", testCase.getName());
@@ -272,11 +274,11 @@ public class JsonFormatter implements EventListener {
 	  }
 	  testCaseMap.put("steps", new ArrayList());
 	  if (!testCase.getTags().isEmpty()) {
-		 List<Map<String, Object>> tagList = new ArrayList();
+		 List<LinkedHashMap<String, Object>> tagList = new ArrayList();
 		 Iterator var6 = testCase.getTags().iterator();
 		 while (var6.hasNext()) {
 			String tag = (String) var6.next();
-			Map<String, Object> tagMap = new HashMap();
+			LinkedHashMap<String, Object> tagMap = new LinkedHashMap();
 			tagMap.put("name", tag);
 			tagList.add(tagMap);
 		 }
@@ -285,13 +287,13 @@ public class JsonFormatter implements EventListener {
 	  return testCaseMap;
    }
 
-   private Map<String, Object> createBackground(TestCase testCase) {
+   private LinkedHashMap<String, Object> createBackground(TestCase testCase) {
 	  TestSourcesModel.AstNode astNode = this.testSources.getAstNode(this.currentFeatureFile,
 		  testCase.getLocation().getLine());
 	  if (astNode != null) {
 		 Background background = (Background) TestSourcesModel.getBackgroundForTestCase(astNode)
 			 .get();
-		 Map<String, Object> testCaseMap = new HashMap();
+		 LinkedHashMap<String, Object> testCaseMap = new LinkedHashMap();
 		 testCaseMap.put("name", background.getName());
 		 testCaseMap.put("line", background.getLocation().getLine());
 		 testCaseMap.put("type", "background");
@@ -316,8 +318,8 @@ public class JsonFormatter implements EventListener {
 	  }
    }
 
-   private Map<String, Object> createTestStep(PickleStepTestStep testStep) {
-	  Map<String, Object> stepMap = new HashMap();
+   private LinkedHashMap<String, Object> createTestStep(PickleStepTestStep testStep) {
+	  LinkedHashMap<String, Object> stepMap = new LinkedHashMap();
 	  stepMap.put("name", testStep.getStepText());
 	  stepMap.put("line", testStep.getStepLine());
 	  TestSourcesModel.AstNode astNode = this.testSources.getAstNode(this.currentFeatureFile,
@@ -339,11 +341,11 @@ public class JsonFormatter implements EventListener {
 	  return stepMap;
    }
 
-   private Map<String, Object> createHookStep(HookTestStep hookTestStep) {
-	  return new HashMap();
+   private LinkedHashMap<String, Object> createHookStep(HookTestStep hookTestStep) {
+	  return new LinkedHashMap();
    }
 
-   private void addHookStepToTestCaseMap(Map<String, Object> currentStepOrHookMap,
+   private void addHookStepToTestCaseMap(LinkedHashMap<String, Object> currentStepOrHookMap,
 	   HookType hookType) {
 	  String hookName;
 	  if (hookType != HookType.AFTER && hookType != HookType.AFTER_STEP) {
@@ -351,7 +353,7 @@ public class JsonFormatter implements EventListener {
 	  } else {
 		 hookName = "after";
 	  }
-	  Map mapToAddTo;
+	  LinkedHashMap mapToAddTo;
 	  switch (hookType) {
 		 case BEFORE:
 			mapToAddTo = this.currentTestCaseMap;
@@ -363,7 +365,8 @@ public class JsonFormatter implements EventListener {
 			mapToAddTo = this.currentBeforeStepHookList;
 			break;
 		 case AFTER_STEP:
-			mapToAddTo = (Map) this.currentStepsList.get(this.currentStepsList.size() - 1);
+			mapToAddTo = (LinkedHashMap) this.currentStepsList.get(
+				this.currentStepsList.size() - 1);
 			break;
 		 default:
 			mapToAddTo = this.currentTestCaseMap;
@@ -374,17 +377,17 @@ public class JsonFormatter implements EventListener {
 	  ((List) mapToAddTo.get(hookName)).add(currentStepOrHookMap);
    }
 
-   private Map<String, Object> createMatchMap(TestStep step, Result result) {
-	  Map<String, Object> matchMap = new HashMap();
+   private LinkedHashMap<String, Object> createMatchMap(TestStep step, Result result) {
+	  LinkedHashMap<String, Object> matchMap = new LinkedHashMap();
 	  if (step instanceof PickleStepTestStep) {
 		 PickleStepTestStep testStep = (PickleStepTestStep) step;
 		 if (!testStep.getDefinitionArgument().isEmpty()) {
-			List<Map<String, Object>> argumentList = new ArrayList();
-			HashMap argumentMap;
+			List<LinkedHashMap<String, Object>> argumentList = new ArrayList();
+			LinkedHashMap argumentMap;
 			for (Iterator var6 = testStep.getDefinitionArgument().iterator(); var6.hasNext();
 				argumentList.add(argumentMap)) {
 			   Argument argument = (Argument) var6.next();
-			   argumentMap = new HashMap();
+			   argumentMap = new LinkedHashMap();
 			   if (argument.getValue() != null) {
 				  argumentMap.put("val", argument.getValue());
 				  argumentMap.put("offset", argument.getStart());
@@ -399,8 +402,8 @@ public class JsonFormatter implements EventListener {
 	  return matchMap;
    }
 
-   private Map<String, Object> createResultMap(Result result) {
-	  Map<String, Object> resultMap = new HashMap();
+   private LinkedHashMap<String, Object> createResultMap(Result result) {
+	  LinkedHashMap<String, Object> resultMap = new LinkedHashMap();
 	  resultMap.put("status", result.getStatus().name().toLowerCase(Locale.ROOT));
 	  if (result.getError() != null) {
 		 resultMap.put("error_message", ExceptionUtils.printStackTrace(result.getError()));
@@ -422,15 +425,15 @@ public class JsonFormatter implements EventListener {
 	  if (!this.currentStepOrHookMap.containsKey("embeddings")) {
 		 this.currentStepOrHookMap.put("embeddings", new ArrayList());
 	  }
-	  Map<String, Object> embedMap = this.createEmbeddingMap(data, mediaType, name);
+	  LinkedHashMap<String, Object> embedMap = this.createEmbeddingMap(data, mediaType, name);
 	  ((List) this.currentStepOrHookMap.get("embeddings")).add(embedMap);
    }
 
-   private Map<String, Object> createDummyFeatureForFailure(TestCaseFinished event) {
+   private LinkedHashMap<String, Object> createDummyFeatureForFailure(TestCaseFinished event) {
 	  Throwable exception = event.getResult().getError();
-	  Map<String, Object> feature = new LinkedHashMap();
+	  LinkedHashMap<String, Object> feature = new LinkedHashMap();
 	  feature.put("line", 1);
-	  Map<String, Object> scenario = new LinkedHashMap();
+	  LinkedHashMap<String, Object> scenario = new LinkedHashMap();
 	  feature.put("elements", Collections.singletonList(scenario));
 	  scenario.put("start_timestamp", this.getDateTimeFromTimeStamp(event.getInstant()));
 	  scenario.put("line", 2);
@@ -439,10 +442,10 @@ public class JsonFormatter implements EventListener {
 	  scenario.put("id", "failure;failure-while-executing-cucumber");
 	  scenario.put("type", "scenario");
 	  scenario.put("keyword", "Scenario");
-	  Map<String, Object> when = new LinkedHashMap();
-	  Map<String, Object> then = new LinkedHashMap();
+	  LinkedHashMap<String, Object> when = new LinkedHashMap();
+	  LinkedHashMap<String, Object> then = new LinkedHashMap();
 	  scenario.put("steps", Arrays.asList(when, then));
-	  Map<String, Object> whenMatch = new LinkedHashMap();
+	  LinkedHashMap<String, Object> whenMatch = new LinkedHashMap();
 	  when.put("result", whenMatch);
 	  whenMatch.put("duration", 0);
 	  whenMatch.put("status", "passed");
@@ -453,7 +456,7 @@ public class JsonFormatter implements EventListener {
 	  whenMatch.put("arguments", new ArrayList());
 	  whenMatch.put("location", "io.cucumber.core.Failure.failure_while_executing_cucumber()");
 	  when.put("keyword", "When ");
-	  Map<String, Object> thenMatch = new LinkedHashMap();
+	  LinkedHashMap<String, Object> thenMatch = new LinkedHashMap();
 	  then.put("result", thenMatch);
 	  thenMatch.put("duration", 0);
 	  thenMatch.put("error_message", ExceptionUtils.printStackTrace(exception));
@@ -480,28 +483,30 @@ public class JsonFormatter implements EventListener {
 	  return formatter.format(instant);
    }
 
-   private Map<String, Object> createDocStringMap(DocStringArgument docString) {
-	  Map<String, Object> docStringMap = new HashMap();
+   private LinkedHashMap<String, Object> createDocStringMap(DocStringArgument docString) {
+	  LinkedHashMap<String, Object> docStringMap = new LinkedHashMap();
 	  docStringMap.put("value", docString.getContent());
 	  docStringMap.put("line", docString.getLine());
 	  docStringMap.put("content_type", docString.getMediaType());
 	  return docStringMap;
    }
 
-   private List<Map<String, List<String>>> createDataTableList(DataTableArgument argument) {
-	  List<Map<String, List<String>>> rowList = new ArrayList();
+   private List<LinkedHashMap<String, List<String>>> createDataTableList(
+	   DataTableArgument argument) {
+	  List<LinkedHashMap<String, List<String>>> rowList = new ArrayList();
 	  Iterator var3 = argument.cells().iterator();
 	  while (var3.hasNext()) {
 		 List<String> row = (List) var3.next();
-		 Map<String, List<String>> rowMap = new HashMap();
+		 LinkedHashMap<String, List<String>> rowMap = new LinkedHashMap();
 		 rowMap.put("cells", new ArrayList(row));
 		 rowList.add(rowMap);
 	  }
 	  return rowList;
    }
 
-   private Map<String, Object> createEmbeddingMap(byte[] data, String mediaType, String name) {
-	  Map<String, Object> embedMap = new HashMap();
+   private LinkedHashMap<String, Object> createEmbeddingMap(byte[] data, String mediaType,
+	   String name) {
+	  LinkedHashMap<String, Object> embedMap = new LinkedHashMap();
 	  embedMap.put("mime_type", mediaType);
 	  embedMap.put("data", Base64.getEncoder().encodeToString(data));
 	  if (name != null) {

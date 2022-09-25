@@ -1,6 +1,6 @@
 package com.vigil.automation.controller;
 
-import com.vigil.automation.entitity.cucumber.TestResult;
+import com.vigil.automation.entity.cucumber.TestResult;
 import com.vigil.automation.exceptions.ResourceNotFoundException;
 import com.vigil.automation.service.ResultsService;
 import java.util.List;

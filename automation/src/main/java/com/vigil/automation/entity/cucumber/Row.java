@@ -1,4 +1,4 @@
-package com.vigil.automation.entitity.cucumber;
+package com.vigil.automation.entity.cucumber;
 
 import java.util.ArrayList;
 import lombok.Getter;

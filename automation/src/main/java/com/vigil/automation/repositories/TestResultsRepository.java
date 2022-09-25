@@ -1,6 +1,6 @@
 package com.vigil.automation.repositories;
 
-import com.vigil.automation.entitity.cucumber.TestResult;
+import com.vigil.automation.entity.cucumber.TestResult;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface TestResultsRepository extends MongoRepository<TestResult, String> {
