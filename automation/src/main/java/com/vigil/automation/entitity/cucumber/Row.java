@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Match{
-    public String location;
-    public ArrayList<Argument> arguments;
+public class Row{
+    public ArrayList<String> cells;
 }

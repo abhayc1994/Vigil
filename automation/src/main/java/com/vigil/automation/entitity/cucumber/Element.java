@@ -1,18 +1,22 @@
-
 package com.vigil.automation.entitity.cucumber;
 
-import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public class Element implements Serializable {
-
-   public String start_timestamp;
-   public Integer line;
-   public String name;
-   public String description;
-   public String id;
-   public String type;
-   public String keyword;
-   public List<Step> steps = null;
-
+@Getter
+@Setter
+@NoArgsConstructor
+public class Element{
+    public int line;
+    public String name;
+    public String description;
+    public String type;
+    public String keyword;
+    public ArrayList<Step> steps;
+    public Date start_timestamp;
+    public String id;
+    public ArrayList<Tag> tags;
 }

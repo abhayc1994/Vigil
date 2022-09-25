@@ -26,3 +26,15 @@ Feature: Onboarding sa
       | LOAN        | Commercial |
       | LOAN        | Consumer   |
       | DEPOSIT     | Consumer   |
+
+  @OnBoardingApi @Regression
+  Scenario Outline: Product Types swe
+    When user sends request for get Product types
+    Then type of Product should be Returned according to the Query Params productLine as '<productLine>'  and custType as '<custType>'
+    @Regres
+    Examples:
+      | productLine | custType   |
+      | DEPOSIT     | Commercial |
+      | LOAN        | Commercial |
+      | LOAN        | Consumer   |
+      | DEPOSIT     | Consumer   |
