@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package com.vigil.automation.cucumber;
+package com.vigil.automation.plugin.cucumber;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -61,11 +61,9 @@ import java.util.stream.Collectors;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 public class JsonFormatter implements EventListener {
@@ -87,7 +85,6 @@ public class JsonFormatter implements EventListener {
    ;
    private static final String runID = null;
    private static String buildNumber = "1";
-
 
    public JsonFormatter(OutputStream out) {
 	  this.writer = new UTF8OutputStreamWriter(out);
@@ -113,6 +110,7 @@ public class JsonFormatter implements EventListener {
 	  if (exception != null) {
 		 this.featureMaps.add(this.createDummyFeatureForFailure(event));
 	  }
+	  List<Map<String, Object>> maps = this.featureMaps;
 	  List<TestResult> results = updateIDs();
 	  results.forEach(result -> {
 		 try {
@@ -128,7 +126,7 @@ public class JsonFormatter implements EventListener {
 		 TestResult results = mapper.convertValue(fmap, TestResult.class);
 		 String hex = generateHex(results.getUri().toString());
 		 results.setBuildNumber(buildNumber);
-		 results.setBuildId(hex);
+		 results.setFeatureID(hex);
 		 return results;
 	  }).collect(Collectors.toList());
 

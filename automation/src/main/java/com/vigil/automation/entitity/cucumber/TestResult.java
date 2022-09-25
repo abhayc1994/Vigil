@@ -25,6 +25,6 @@ public class TestResult implements Serializable {
    private String keyword;
    private String uri;
    private List<Object> tags = null;
-   private String buildId;
+   private String featureID;
    private String buildNumber;
 }
