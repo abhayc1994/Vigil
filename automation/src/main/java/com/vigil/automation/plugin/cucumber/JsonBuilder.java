@@ -66,7 +66,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
-public class JsonFormatter implements EventListener {
+public class JsonBuilder implements EventListener {
 
    private static final String before = "before";
    private static final String after = "after";
@@ -90,7 +90,7 @@ public class JsonFormatter implements EventListener {
 
    private static final String moduleName = "Actions";
 
-   public JsonFormatter(OutputStream out) {
+   public JsonBuilder(OutputStream out) {
 	  this.writer = new UTF8OutputStreamWriter(out);
 	  JsonFactory jsonFactory = new JsonFactory();
 	  jsonFactory.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
