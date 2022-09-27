@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,5 +46,11 @@ public class ResultsController {
    public List<String> getAllModuleList() {
 	  logger.info("Getting List of All Modules");
 	  return service.getAllModuleNamesList();
+   }
+
+   @GetMapping(value = "/getExecutedBuildsByModuleName")
+   public List<String> getExecutedBuildsByModuleName(@RequestParam String moduleName) {
+	  logger.info("Getting Executed Builds For Module {}",moduleName);
+	  return service.getExecutedBuildsByModuleName(moduleName);
    }
 }

@@ -2,6 +2,7 @@ package com.vigil.automation.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,9 +16,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
    @Override
    protected void configure(HttpSecurity httpSecurity) throws Exception {
-	  httpSecurity.csrf().disable().authorizeRequests().anyRequest().authenticated().and()
-		  .httpBasic();
-
+	  httpSecurity.cors().disable()
+		  .authorizeRequests()
+		  .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+		  .anyRequest()
+		  .fullyAuthenticated()
+		  .and()
+		  .httpBasic()
+		  .and()
+		  .csrf().disable();
    }
 
    @Bean

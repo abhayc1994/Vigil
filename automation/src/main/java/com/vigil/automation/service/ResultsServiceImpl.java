@@ -8,6 +8,7 @@ import com.vigil.automation.repositories.TestResultsRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,13 @@ public class ResultsServiceImpl implements ResultsService {
 	  }
 	  return moduleList;
 
+   }
+
+   @Override
+   public List<String> getExecutedBuildsByModuleName(String moduleName) {
+	  List<TestResult> results = resultsRepository.findResultsByModuleName(moduleName);
+	  return results.stream().map(TestResult::getBuildNumber)
+		  .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
    }
 
    @Override

@@ -19,4 +19,5 @@ public interface ResultsService {
    TestResult findResultsById(String resultId) throws ResourceNotFoundException;
 
    List<String> getAllModuleNamesList();
+   List<String> getExecutedBuildsByModuleName(String moduleName);
 }
