@@ -1,6 +1,6 @@
 package com.vigil.automation.controller;
 
-import com.vigil.automation.entity.cucumber.TestResult;
+import com.vigil.automation.entity.cucumber.Feature;
 import com.vigil.automation.exceptions.ResourceNotFoundException;
 import com.vigil.automation.service.ResultsService;
 import java.util.List;
@@ -25,19 +25,19 @@ public class ResultsController {
    ResultsService service;
 
    @GetMapping(value = "/")
-   public List<TestResult> getAllResults() {
+   public List<Feature> getAllResults() {
 	  logger.info("Getting all results.");
 	  return service.getAllResults();
    }
 
    @GetMapping(value = "/{resultId}")
-   public TestResult getResultById(@PathVariable String resultId) throws ResourceNotFoundException {
+   public Feature getResultById(@PathVariable String resultId) throws ResourceNotFoundException {
 	  logger.info("Getting result with ID: {}", resultId);
 	  return service.findResultsById(resultId);
    }
 
    @PostMapping(value = "/create")
-   public TestResult addResult(@RequestBody TestResult result) {
+   public Feature addResult(@RequestBody Feature result) {
 	  logger.info("Saving result.");
 	  return service.save(result);
    }
@@ -55,7 +55,7 @@ public class ResultsController {
    }
 
    @GetMapping(value = "/getTestResultByModuleNameAndBuildNumber")
-   public List<TestResult> getTestResultByModuleNameAndBuildNumber(@RequestParam String moduleName,
+   public List<Feature> getTestResultByModuleNameAndBuildNumber(@RequestParam String moduleName,
 	   @RequestParam String buildNumber
    ) {
 	  logger.info("Getting Test Results For Module: {} Build : {}", moduleName,buildNumber);

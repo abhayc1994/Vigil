@@ -12,5 +12,4 @@ public class Location {
    public int line;
    public Long column;
 
-
 }

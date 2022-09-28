@@ -100,4 +100,7 @@ public class steps {
 	   String string) {
    }
 
+   @Then("Yoyo yo brother")
+   public void yoyoYoBrother() {
+   }
 }

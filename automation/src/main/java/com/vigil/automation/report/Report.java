@@ -1,37 +1,25 @@
 package com.vigil.automation.report;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vigil.automation.entity.cucumber.Feature;
 import com.vigil.automation.report.dto.Example;
-import com.vigil.automation.report.dto.Feature;
 import com.vigil.automation.report.dto.Row;
 import com.vigil.automation.report.dto.Scenario;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Report {
 
-   private List<Feature> features = new ArrayList<>();
+   private List<com.vigil.automation.report.dto.Feature> features = new ArrayList<>();
    private List<String> errors = new ArrayList<>();
    private Duration duration = Duration.ofNanos(0);
 
@@ -41,73 +29,11 @@ public class Report {
 	* @param cucumberJsonReports list of json files or directory containing json files or json file
 	*                            urls or json strings or json objects
 	*/
-   public void buildReport(Object... cucumberJsonReports) {
-	  List<Object> jsonReports = new ArrayList<>();
-	  jsonReports.addAll(Arrays.asList(cucumberJsonReports));
-	  List<Object> reportDirs = jsonReports.stream()
-		  .filter(r -> r instanceof File && ((File) r).isDirectory()).collect(Collectors.toList());
-	  jsonReports.removeAll(reportDirs);
-	  reportDirs.forEach(reportDir -> {
-		 try {
-			jsonReports.addAll(Files.walk(Paths.get(((File) reportDir).getPath()))
-				.filter(p -> p.toString().endsWith(".json")).map(p -> new File(p.toString()))
-				.collect(Collectors.toList()));
-		 } catch (Exception e) {
-			e.printStackTrace();
-		 }
-	  });
-	  ObjectMapper mapper = new ObjectMapper();
-	  List<Feature[]> builds = new ArrayList<>();
-	  for (Object jsonReport : jsonReports) {
-		 try {
-			if (jsonReport instanceof File) {
-			   try {
-				  builds.add(mapper.readValue((File) jsonReport, Feature[].class));
-			   } catch (Exception e) {
-				  builds.add(mapper.readValue(
-					  decode(new String(Files.readAllBytes(((File) jsonReport).toPath()))),
-					  Feature[].class));
-			   }
-			} else if (jsonReport instanceof URL) {
-			   try {
-				  builds.add(mapper.readValue((URL) jsonReport, Feature[].class));
-			   } catch (Exception e) {
-				  builds.add(mapper.readValue(decode(readUrl((URL) jsonReport)), Feature[].class));
-			   }
-			} else if (jsonReport instanceof String) {
-			   try {
-				  builds.add(mapper.readValue((String) jsonReport, Feature[].class));
-			   } catch (Exception e) {
-				  builds.add(mapper.readValue(decode((String) jsonReport), Feature[].class));
-			   }
-			} else if (jsonReport instanceof JSONObject) {
-			   try {
-				  builds.add(mapper.readValue(jsonReport.toString(), Feature[].class));
-			   } catch (Exception e) {
-				  builds.add(mapper.readValue(decode(jsonReport.toString()), Feature[].class));
-			   }
-			} else {
-			   throw new Exception("Invalid jsonReport!");
-			}
-		 } catch (Exception e) {
-			System.out.println("Error:: While mapping jsonReport");
-			e.printStackTrace();
-		 }
-	  }
-	  process(builds);
-   }
+   public void buildReport(List<Feature> results) {
 
-   /**
-	* Process the list of array of features to generate list of features and errors
-	*
-	* @param builds list of array of features
-	*/
-   private void process(List<Feature[]> builds) {
-	  for (Feature[] build : builds) {
-		 features.addAll(Arrays.asList(build));
-	  }
-	  Map<String, Feature> featuresMap = new HashMap<>();
-	  for (Feature feature : features) {
+
+	  Map<String, com.vigil.automation.report.dto.Feature> featuresMap = new HashMap<>();
+	  for (com.vigil.automation.report.dto.Feature feature : features) {
 		 if (featuresMap.get(feature.getId()) == null) {
 			featuresMap.put(feature.getId(), feature);
 		 } else {
@@ -115,7 +41,7 @@ public class Report {
 		 }
 	  }
 	  features = new ArrayList<>(featuresMap.values());
-	  for (Feature feature : features) {
+	  for (com.vigil.automation.report.dto.Feature feature : features) {
 		 Map<String, Scenario> scenariosMap = new HashMap<>();
 		 List<Row> examples = new ArrayList<>();
 		 for (Scenario scenario : feature.getScenarios()) {
@@ -164,36 +90,13 @@ public class Report {
 	  }
    }
 
-   /**
-	* Read the file from the given url and return the contents
-	*
-	* @param url of the file
-	* @return contents of the file
-	*/
-   private String readUrl(URL url) {
-	  StringBuilder content = new StringBuilder();
-	  try {
-		 URLConnection urlConnection = url.openConnection();
-		 BufferedReader bufferedReader = new BufferedReader(
-			 new InputStreamReader(urlConnection.getInputStream()));
-		 String line;
-		 while ((line = bufferedReader.readLine()) != null) {
-			content.append(line).append("\n");
-		 }
-		 bufferedReader.close();
-	  } catch (IOException e) {
-		 System.out.println("Error:: While reading JSON report from URL");
-		 e.printStackTrace();
-	  }
-	  return content.toString();
-   }
 
    /**
 	* Returns list of feature for building report
 	*
 	* @return List of feature
 	*/
-   public List<Feature> getFeatures() {
+   public List<com.vigil.automation.report.dto.Feature> getFeatures() {
 	  return features;
    }
 

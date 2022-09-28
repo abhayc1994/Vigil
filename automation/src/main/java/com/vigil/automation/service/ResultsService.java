@@ -1,25 +1,25 @@
 package com.vigil.automation.service;
 
-import com.vigil.automation.entity.cucumber.TestResult;
+import com.vigil.automation.entity.cucumber.Feature;
 import com.vigil.automation.exceptions.ResourceNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
 public interface ResultsService {
 
-   TestResult save(TestResult result);
+   Feature save(Feature result);
 
-   TestResult updateResultByID(TestResult result) throws ResourceNotFoundException;
+   Feature updateResultByID(Feature result) throws ResourceNotFoundException;
 
-   List<TestResult> getAllResults();
+   List<Feature> getAllResults();
 
-   Optional<TestResult> getResultByBuildNumberAndFeatureId(String buildNumber,
+   Optional<Feature> getResultByBuildNumberAndFeatureId(String buildNumber,
        String featureID);
 
-   TestResult findResultsById(String resultId) throws ResourceNotFoundException;
+   Feature findResultsById(String resultId) throws ResourceNotFoundException;
 
    List<String> getAllModuleNamesList();
    List<String> getExecutedBuildsByModuleName(String moduleName);
 
-   List<TestResult> getTestResultByModuleNameAndBuildNumber(String moduleName, String buildNumber);
+   List<Feature> getTestResultByModuleNameAndBuildNumber(String moduleName, String buildNumber);
 }

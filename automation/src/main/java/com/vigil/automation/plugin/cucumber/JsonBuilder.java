@@ -14,10 +14,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.sun.xml.stream.writers.UTF8OutputStreamWriter;
-import com.vigil.automation.entity.cucumber.TestResult;
+import com.vigil.automation.entity.cucumber.Feature;
 import io.cucumber.core.exception.ExceptionUtils;
 import io.cucumber.messages.types.Background;
-import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.Step;
 import io.cucumber.plugin.EventListener;
@@ -116,9 +115,10 @@ public class JsonBuilder implements EventListener {
 		 this.featureMaps.add(this.createDummyFeatureForFailure(event));
 	  }
 	  List<LinkedHashMap<String, Object>> maps = this.featureMaps;
-	  List<TestResult> results = updateIDs();
+	  List<Feature> results = updateIDs();
 	  results.forEach(result -> {
 		 try {
+			System.out.println(mapper.writeValueAsString(result));
 			pushResult(mapper.writeValueAsString(result));
 		 } catch (IOException e) {
 			throw new RuntimeException(e);
@@ -126,9 +126,9 @@ public class JsonBuilder implements EventListener {
 	  });
    }
 
-   private List<TestResult> updateIDs() {
+   private List<Feature> updateIDs() {
 	  return this.featureMaps.stream().map(fmap -> {
-		 TestResult results = mapper.convertValue(fmap, TestResult.class);
+		 Feature results = mapper.convertValue(fmap, Feature.class);
 		 String hex = generateHex(results.getUri().toString());
 		 results.setBuildNumber(buildNumber);
 		 results.setFeatureID(hex);
@@ -233,7 +233,7 @@ public class JsonBuilder implements EventListener {
 	  LinkedHashMap<String, Object> featureMap = new LinkedHashMap();
 	  featureMap.put("uri", TestSourcesModel.relativize(testCase.getUri()));
 	  featureMap.put("elements", new ArrayList());
-	  Feature feature = this.testSources.getFeature(testCase.getUri());
+	  io.cucumber.messages.types.Feature feature = this.testSources.getFeature(testCase.getUri());
 	  if (feature != null) {
 		 featureMap.put("keyword", feature.getKeyword());
 		 featureMap.put("name", feature.getName());

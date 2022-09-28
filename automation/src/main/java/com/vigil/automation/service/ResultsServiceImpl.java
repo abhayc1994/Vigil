@@ -2,7 +2,7 @@ package com.vigil.automation.service;
 
 import com.mongodb.client.DistinctIterable;
 import com.mongodb.client.MongoCursor;
-import com.vigil.automation.entity.cucumber.TestResult;
+import com.vigil.automation.entity.cucumber.Feature;
 import com.vigil.automation.exceptions.ResourceNotFoundException;
 import com.vigil.automation.repositories.TestResultsRepository;
 import java.util.ArrayList;
@@ -26,22 +26,22 @@ public class ResultsServiceImpl implements ResultsService {
    MongoTemplate mongoTemplate;
 
    @Override
-   public TestResult save(TestResult result) {
-	  Optional<TestResult> optionalTestResult = getResultByBuildNumberAndFeatureId(
+   public Feature save(Feature result) {
+	  Optional<Feature> optionalTestResult = getResultByBuildNumberAndFeatureId(
 		  result.getBuildNumber(),
 		  result.getFeatureID());
 	  if (optionalTestResult.isPresent()) {
-		 TestResult existingResult = optionalTestResult.get();
+		 Feature existingResult = optionalTestResult.get();
 		 result.setObjectID(existingResult.getObjectID());
 	  }
 	  return resultsRepository.save(result);
    }
 
    @Override
-   public TestResult updateResultByID(TestResult result) throws ResourceNotFoundException {
-	  Optional<TestResult> existingTestResult = this.resultsRepository.findById(result.getId());
+   public Feature updateResultByID(Feature result) throws ResourceNotFoundException {
+	  Optional<Feature> existingTestResult = this.resultsRepository.findById(result.getId());
 	  if (existingTestResult.isPresent()) {
-		 TestResult productUpdate = existingTestResult.get();
+		 Feature productUpdate = existingTestResult.get();
 		 productUpdate.setId(result.getId());
 		 return productUpdate;
 	  } else {
@@ -49,8 +49,8 @@ public class ResultsServiceImpl implements ResultsService {
 	  }
    }
 
-   public TestResult findResultsById(String resultId) throws ResourceNotFoundException {
-	  Optional<TestResult> resultOptional = resultsRepository.findById(resultId);
+   public Feature findResultsById(String resultId) throws ResourceNotFoundException {
+	  Optional<Feature> resultOptional = resultsRepository.findById(resultId);
 	  if (resultOptional.isPresent()) {
 		 return resultOptional.get();
 	  } else {
@@ -76,24 +76,24 @@ public class ResultsServiceImpl implements ResultsService {
 
    @Override
    public List<String> getExecutedBuildsByModuleName(String moduleName) {
-	  List<TestResult> results = resultsRepository.findResultsByModuleName(moduleName);
-	  return results.stream().map(TestResult::getBuildNumber)
+	  List<Feature> results = resultsRepository.findResultsByModuleName(moduleName);
+	  return results.stream().map(Feature::getBuildNumber)
 		  .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
    }
 
    @Override
-   public List<TestResult> getTestResultByModuleNameAndBuildNumber(String moduleName,
+   public List<Feature> getTestResultByModuleNameAndBuildNumber(String moduleName,
 	   String buildNumber) {
 	  return resultsRepository.findResultsByModuleNameAndBuildNumber(moduleName, buildNumber);
    }
 
    @Override
-   public List<TestResult> getAllResults() {
+   public List<Feature> getAllResults() {
 	  return resultsRepository.findAll();
    }
 
    @Override
-   public Optional<TestResult> getResultByBuildNumberAndFeatureId(String buildNumber,
+   public Optional<Feature> getResultByBuildNumberAndFeatureId(String buildNumber,
 	   String featureID) {
 	  return Optional.ofNullable(
 		  resultsRepository.findFirstByBuildNumberAndFeatureID(buildNumber, featureID));

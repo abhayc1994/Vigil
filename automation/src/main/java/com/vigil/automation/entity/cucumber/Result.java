@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Result{
-    public int duration;
+    public Integer duration;
     public String status;
 }
