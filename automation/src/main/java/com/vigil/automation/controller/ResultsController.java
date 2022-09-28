@@ -50,7 +50,15 @@ public class ResultsController {
 
    @GetMapping(value = "/getExecutedBuildsByModuleName")
    public List<String> getExecutedBuildsByModuleName(@RequestParam String moduleName) {
-	  logger.info("Getting Executed Builds For Module {}",moduleName);
+	  logger.info("Getting Executed Builds For Module {}", moduleName);
 	  return service.getExecutedBuildsByModuleName(moduleName);
+   }
+
+   @GetMapping(value = "/getTestResultByModuleNameAndBuildNumber")
+   public List<TestResult> getTestResultByModuleNameAndBuildNumber(@RequestParam String moduleName,
+	   @RequestParam String buildNumber
+   ) {
+	  logger.info("Getting Test Results For Module: {} Build : {}", moduleName,buildNumber);
+	  return service.getTestResultByModuleNameAndBuildNumber(moduleName,buildNumber);
    }
 }

@@ -20,4 +20,6 @@ public interface ResultsService {
 
    List<String> getAllModuleNamesList();
    List<String> getExecutedBuildsByModuleName(String moduleName);
+
+   List<TestResult> getTestResultByModuleNameAndBuildNumber(String moduleName, String buildNumber);
 }

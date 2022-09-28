@@ -10,7 +10,7 @@ public interface TestResultsRepository extends MongoRepository<TestResult, Strin
 
    TestResult findFirstByBuildNumberAndFeatureID(String buildNumber, String featureID);
 
-   List<TestResult> findResultsByModuleName(String number);
-
+   List<TestResult> findResultsByModuleName(String moduleName);
+   List<TestResult> findResultsByModuleNameAndBuildNumber(String moduleName ,String buildNumber);
 }
 

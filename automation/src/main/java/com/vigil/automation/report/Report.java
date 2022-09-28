@@ -26,10 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
-/**
- * Process the JSON reports and build the consolidated list of features
- */
+@Component
 public class Report {
 
    private List<Feature> features = new ArrayList<>();
@@ -42,7 +41,7 @@ public class Report {
 	* @param cucumberJsonReports list of json files or directory containing json files or json file
 	*                            urls or json strings or json objects
 	*/
-   public Report(Object... cucumberJsonReports) {
+   public void buildReport(Object... cucumberJsonReports) {
 	  List<Object> jsonReports = new ArrayList<>();
 	  jsonReports.addAll(Arrays.asList(cucumberJsonReports));
 	  List<Object> reportDirs = jsonReports.stream()

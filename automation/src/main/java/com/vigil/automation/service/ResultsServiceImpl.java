@@ -82,6 +82,12 @@ public class ResultsServiceImpl implements ResultsService {
    }
 
    @Override
+   public List<TestResult> getTestResultByModuleNameAndBuildNumber(String moduleName,
+	   String buildNumber) {
+	  return resultsRepository.findResultsByModuleNameAndBuildNumber(moduleName, buildNumber);
+   }
+
+   @Override
    public List<TestResult> getAllResults() {
 	  return resultsRepository.findAll();
    }
