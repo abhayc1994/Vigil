@@ -7,7 +7,8 @@ import io.cucumber.java.en.When;
 public class steps {
 
    @Given("user logged into Onboarding")
-   public void user_logged_into_onboarding() {
+   public void user_logged_into_onboarding() throws InterruptedException {
+      Thread.sleep(10000);
    }
 
    @Given("User is Starting to create a Product")

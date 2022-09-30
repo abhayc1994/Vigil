@@ -5,6 +5,7 @@ Feature: Onboarding sa
   Background: User Has Logged into OnBoarding With Valid Credentials
     Given user logged into Onboarding
     Then Yoyo yo brother
+
   @ONBRD1225 @Smoke @Deposit @REG_ONBRD_1225_TC_0001
   Scenario Outline: REG_ONBRD_1225_TC_0001
     Given User is Starting to create a Product
@@ -22,3 +23,27 @@ Feature: Onboarding sa
       | LOAN        | Consumer   |
       | DEPOSIT     | Consumer   |
 
+
+  @OnBoardingApi @Regression
+  Scenario Outline: Product Types s
+    When user sends request for get Product types
+    Then type of Product should be Returned according to the Query Params productLine as '<productLine>'  and custType as '<custType>'
+    @Regres
+    Examples:
+      | productLine | custType   |
+      | DEPOSIT     | Commercial |
+      | LOAN        | Commercial |
+      | LOAN        | Consumer   |
+      | DEPOSIT     | Consumer   |
+
+  @OnBoardingApi @Regression
+  Scenario Outline: Product Types swe
+    When user sends request for get Product types
+    Then type of Product should be Returned according to the Query Params productLine as '<productLine>'  and custType as '<custType>'
+    @Regres
+    Examples:
+      | productLine | custType   |
+      | DEPOSIT     | Commercial |
+      | LOAN        | Commercial |
+      | LOAN        | Consumer   |
+      | DEPOSIT     | Consumer   |
