@@ -58,7 +58,8 @@ public class ResultsController {
    public List<Feature> getTestResultByModuleNameAndBuildNumber(@RequestParam String moduleName,
 	   @RequestParam String buildNumber
    ) {
-	  logger.info("Getting Test Results For Module: {} Build : {}", moduleName,buildNumber);
-	  return service.getTestResultByModuleNameAndBuildNumber(moduleName,buildNumber);
+	  logger.info("Getting Test Results For Module: {} Build : {}", moduleName, buildNumber);
+	  return service.getTestResultByModuleNameAndBuildNumber(moduleName, buildNumber);
    }
+
 }

@@ -3,11 +3,16 @@ package com.vigil.automation.service;
 import com.mongodb.client.DistinctIterable;
 import com.mongodb.client.MongoCursor;
 import com.vigil.automation.entity.cucumber.Feature;
+import com.vigil.automation.entity.cucumber.Scenario;
+import com.vigil.automation.entity.cucumber.Step;
 import com.vigil.automation.exceptions.ResourceNotFoundException;
 import com.vigil.automation.repositories.TestResultsRepository;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +32,8 @@ public class ResultsServiceImpl implements ResultsService {
 
    @Override
    public Feature save(Feature result) {
+	  result.setTestStatsMap(
+		  getStatsForFeature(result));
 	  Optional<Feature> optionalTestResult = getResultByBuildNumberAndFeatureId(
 		  result.getBuildNumber(),
 		  result.getFeatureID());
@@ -41,9 +48,9 @@ public class ResultsServiceImpl implements ResultsService {
    public Feature updateResultByID(Feature result) throws ResourceNotFoundException {
 	  Optional<Feature> existingTestResult = this.resultsRepository.findById(result.getId());
 	  if (existingTestResult.isPresent()) {
-		 Feature productUpdate = existingTestResult.get();
-		 productUpdate.setId(result.getId());
-		 return productUpdate;
+		 Feature feature = existingTestResult.get();
+		 feature.setId(result.getId());
+		 return feature;
 	  } else {
 		 throw new ResourceNotFoundException("Record not found with id : " + result.getId());
 	  }
@@ -87,6 +94,55 @@ public class ResultsServiceImpl implements ResultsService {
 	  return resultsRepository.findResultsByModuleNameAndBuildNumber(moduleName, buildNumber);
    }
 
+   private Map<String, String> getStatsForFeature(Feature feature) {
+	  long passed = 0;
+	  long failed = 0;
+	  long skipped = 0;
+	  List<Step> bgSteps = new ArrayList<>();
+	  Predicate<Scenario> scenarioPredicate = scenario -> scenario.getType()
+		  .equalsIgnoreCase("background");
+	  Optional<Scenario> backgroundScenarioOptional = feature.getScenarios().stream()
+		  .filter(scenarioPredicate).findFirst();
+	  if (backgroundScenarioOptional.isPresent()) {
+		 bgSteps.addAll((backgroundScenarioOptional.get().getSteps()));
+	  }
+	  for (Scenario scenario : feature.getScenarios()) {
+		 if (scenario.getType()
+			 .equalsIgnoreCase("background")) {
+			continue;
+		 }
+		 List<Step> scenarioSteps = scenario.getSteps();
+		 List<Step> modifiedSteps = new ArrayList<>();
+		 if (bgSteps.size() > 0) {
+			modifiedSteps.addAll(bgSteps);
+		 }
+		 modifiedSteps.addAll(scenarioSteps);
+		 boolean isAnyStepFailedOrSkipped = false;
+		 for (Step step : modifiedSteps) {
+			if (step.getResult().getStatus().equalsIgnoreCase("failed")) {
+			   failed++;
+			   isAnyStepFailedOrSkipped = true;
+			   break;
+			} else if (step.getResult().getStatus().equalsIgnoreCase("undefined") ||
+				step.getResult().getStatus().equalsIgnoreCase("skipped")) {
+			   skipped++;
+			   isAnyStepFailedOrSkipped = true;
+			   break;
+			}
+
+		 }
+		 if (!isAnyStepFailedOrSkipped) {
+			passed++;
+		 }
+	  }
+	  Map<String, String> statsmap = new HashMap<String, String>();
+	  statsmap.put("Passed", String.valueOf(passed));
+	  statsmap.put("Failed", String.valueOf(failed));
+	  statsmap.put("Skipped", String.valueOf(skipped));
+	  return statsmap;
+
+   }
+
    @Override
    public List<Feature> getAllResults() {
 	  return resultsRepository.findAll();
@@ -99,3 +155,5 @@ public class ResultsServiceImpl implements ResultsService {
 		  resultsRepository.findFirstByBuildNumberAndFeatureID(buildNumber, featureID));
    }
 }
+
+

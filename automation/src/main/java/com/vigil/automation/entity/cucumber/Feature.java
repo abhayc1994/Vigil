@@ -2,7 +2,9 @@ package com.vigil.automation.entity.cucumber;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,16 +19,17 @@ public class Feature {
 
    @Id
    private String objectID;
-   public Integer line;
-   public String name;
-   public String description;
-   public String id;
-   public String keyword;
-   public String uri;
-   public List<Tag> tags;
-   public String featureID;
-   public String buildNumber;
-   public String moduleName;
+   private Integer line;
+   private String name;
+   private String description;
+   private String id;
+   private String keyword;
+   private String uri;
+   private List<Tag> tags;
+   private String featureID;
+   private String buildNumber;
+   private String moduleName;
    @JsonProperty("elements")
-   public List<Scenario> scenarios  ;
+   private List<Scenario> scenarios  ;
+   private Map<String,String> testStatsMap;
 }

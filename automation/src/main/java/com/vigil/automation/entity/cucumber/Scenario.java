@@ -11,13 +11,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Scenario {
-    public Integer line;
-    public String name;
-    public String description;
-    public String type;
-    public String keyword;
-    public List<Step> steps = null;
-    public Long startTimestamp;
-    public String id;
-    public List<Tag> tags = null;
+    private Integer line;
+    private String name;
+    private String description;
+    private String type;
+    private String keyword;
+    private List<Step> steps = null;
+    private Long startTimestamp;
+    private String id;
+    private List<Tag> tags = null;
 }

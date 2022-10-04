@@ -10,10 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Step{
-    public Result result;
-    public Integer line;
-    public String name;
-    public Match match;
-    public String keyword;
-    public List<Row> rows;
+    private Result result;
+    private Integer line;
+    private String name;
+    private Match match;
+    private String keyword;
+    private List<Row> rows;
 }

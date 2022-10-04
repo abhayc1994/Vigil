@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Row{
-    public ArrayList<String> cells;
+    private ArrayList<String> cells;
 }

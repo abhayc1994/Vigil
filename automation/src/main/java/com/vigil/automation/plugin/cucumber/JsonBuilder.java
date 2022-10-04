@@ -83,11 +83,11 @@ public class JsonBuilder implements EventListener {
    private static final String uri = "http://localhost:8080/results/create";
    ;
    private static final String runID = null;
-   private static String buildNumber = "1";
+   private static String buildNumber = "2";
    private static final String user = "vigil";
    private static final String password = "vigil@123";
 
-   private static final String moduleName = "Actions";
+   private static final String moduleName = "Surveys";
 
    public JsonBuilder(OutputStream out) {
 	  this.writer = new UTF8OutputStreamWriter(out);
@@ -112,7 +112,7 @@ public class JsonBuilder implements EventListener {
    private void finishReportAfterTest(TestCaseFinished event) {
 	  Throwable exception = event.getResult().getError();
 	  if (exception != null) {
-		 this.featureMaps.add(this.createDummyFeatureForFailure(event));
+//		 this.featureMaps.add(this.createDummyFeatureForFailure(event));
 	  }
 	  List<LinkedHashMap<String, Object>> maps = this.featureMaps;
 	  List<Feature> results = updateIDs();
@@ -429,53 +429,53 @@ public class JsonBuilder implements EventListener {
 	  ((List) this.currentStepOrHookMap.get("embeddings")).add(embedMap);
    }
 
-   private LinkedHashMap<String, Object> createDummyFeatureForFailure(TestCaseFinished event) {
-	  Throwable exception = event.getResult().getError();
-	  LinkedHashMap<String, Object> feature = new LinkedHashMap();
-	  feature.put("line", 1);
-	  LinkedHashMap<String, Object> scenario = new LinkedHashMap();
-	  feature.put("elements", Collections.singletonList(scenario));
-	  scenario.put("start_timestamp", this.getDateTimeFromTimeStamp(event.getInstant()));
-	  scenario.put("line", 2);
-	  scenario.put("name", "Failure while executing Cucumber");
-	  scenario.put("description", "");
-	  scenario.put("id", "failure;failure-while-executing-cucumber");
-	  scenario.put("type", "scenario");
-	  scenario.put("keyword", "Scenario");
-	  LinkedHashMap<String, Object> when = new LinkedHashMap();
-	  LinkedHashMap<String, Object> then = new LinkedHashMap();
-	  scenario.put("steps", Arrays.asList(when, then));
-	  LinkedHashMap<String, Object> whenMatch = new LinkedHashMap();
-	  when.put("result", whenMatch);
-	  whenMatch.put("duration", 0);
-	  whenMatch.put("status", "passed");
-	  when.put("line", 3);
-	  when.put("name", "Cucumber failed while executing");
-	  whenMatch = new LinkedHashMap();
-	  when.put("match", whenMatch);
-	  whenMatch.put("arguments", new ArrayList());
-	  whenMatch.put("location", "io.cucumber.core.Failure.failure_while_executing_cucumber()");
-	  when.put("keyword", "When ");
-	  LinkedHashMap<String, Object> thenMatch = new LinkedHashMap();
-	  then.put("result", thenMatch);
-	  thenMatch.put("duration", 0);
-	  thenMatch.put("error_message", ExceptionUtils.printStackTrace(exception));
-	  thenMatch.put("status", "failed");
-	  then.put("line", 4);
-	  then.put("name", "Cucumber will report this error:");
-	  thenMatch = new LinkedHashMap();
-	  then.put("match", thenMatch);
-	  thenMatch.put("arguments", new ArrayList());
-	  thenMatch.put("location", "io.cucumber.core.Failure.cucumber_reports_this_error()");
-	  then.put("keyword", "Then ");
-	  feature.put("name", "Test run failed");
-	  feature.put("description", "There were errors during the execution");
-	  feature.put("id", "failure");
-	  feature.put("keyword", "Feature");
-	  feature.put("uri", "classpath:io/cucumber/core/failure.feature");
-	  feature.put("tags", new ArrayList());
-	  return feature;
-   }
+//   private LinkedHashMap<String, Object> createDummyFeatureForFailure(TestCaseFinished event) {
+//	  Throwable exception = event.getResult().getError();
+//	  LinkedHashMap<String, Object> feature = new LinkedHashMap();
+//	  feature.put("line", 1);
+//	  LinkedHashMap<String, Object> scenario = new LinkedHashMap();
+//	  feature.put("elements", Collections.singletonList(scenario));
+//	  scenario.put("start_timestamp", this.getDateTimeFromTimeStamp(event.getInstant()));
+//	  scenario.put("line", 2);
+//	  scenario.put("name", "Failure while executing Cucumber");
+//	  scenario.put("description", "");
+//	  scenario.put("id", "failure;failure-while-executing-cucumber");
+//	  scenario.put("type", "scenario");
+//	  scenario.put("keyword", "Scenario");
+//	  LinkedHashMap<String, Object> when = new LinkedHashMap();
+//	  LinkedHashMap<String, Object> then = new LinkedHashMap();
+//	  scenario.put("steps", Arrays.asList(when, then));
+//	  LinkedHashMap<String, Object> whenMatch = new LinkedHashMap();
+//	  when.put("result", whenMatch);
+//	  whenMatch.put("duration", 0);
+//	  whenMatch.put("status", "passed");
+//	  when.put("line", 3);
+//	  when.put("name", "Cucumber failed while executing");
+//	  whenMatch = new LinkedHashMap();
+//	  when.put("match", whenMatch);
+//	  whenMatch.put("arguments", new ArrayList());
+//	  whenMatch.put("location", "io.cucumber.core.Failure.failure_while_executing_cucumber()");
+//	  when.put("keyword", "When ");
+//	  LinkedHashMap<String, Object> thenMatch = new LinkedHashMap();
+//	  then.put("result", thenMatch);
+//	  thenMatch.put("duration", 0);
+//	  thenMatch.put("error_message", ExceptionUtils.printStackTrace(exception));
+//	  thenMatch.put("status", "failed");
+//	  then.put("line", 4);
+//	  then.put("name", "Cucumber will report this error:");
+//	  thenMatch = new LinkedHashMap();
+//	  then.put("match", thenMatch);
+//	  thenMatch.put("arguments", new ArrayList());
+//	  thenMatch.put("location", "io.cucumber.core.Failure.cucumber_reports_this_error()");
+//	  then.put("keyword", "Then ");
+//	  feature.put("name", "Test run failed");
+//	  feature.put("description", "There were errors during the execution");
+//	  feature.put("id", "failure");
+//	  feature.put("keyword", "Feature");
+//	  feature.put("uri", "classpath:io/cucumber/core/failure.feature");
+//	  feature.put("tags", new ArrayList());
+//	  return feature;
+//   }
 
    private String getDateTimeFromTimeStamp(Instant instant) {
 	  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")

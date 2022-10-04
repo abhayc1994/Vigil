@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Tag{
-    public String name;
-    public String type;
-    public Location location;
+    private String name;
+    private String type;
+    private Location location;
 }

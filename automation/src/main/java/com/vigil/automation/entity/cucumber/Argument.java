@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Argument{
-    public String val;
-    public int offset;
+    private String val;
+    private int offset;
 }

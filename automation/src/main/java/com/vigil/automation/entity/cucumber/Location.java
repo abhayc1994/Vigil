@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Location {
 
-   public int line;
-   public Long column;
+   private int line;
+   private Long column;
 
 }
