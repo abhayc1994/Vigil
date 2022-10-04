@@ -82,10 +82,30 @@ public class ResultsServiceImpl implements ResultsService {
    }
 
    @Override
-   public List<String> getExecutedBuildsByModuleName(String moduleName) {
+   public List<Map<String, String>> getExecutedBuildsByModuleName(String moduleName) {
+	  List<Map<String, String>> list = new ArrayList<>();
 	  List<Feature> results = resultsRepository.findResultsByModuleName(moduleName);
-	  return results.stream().map(Feature::getBuildNumber)
+	  List<String> buildNumbers = results.stream().map(Feature::getBuildNumber)
 		  .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+	  long passed = 0;
+	  long failed = 0;
+	  long skipped = 0;
+	  for (String buildNumber : buildNumbers) {
+		 List<Feature> features = resultsRepository.findResultsByBuildNumber(buildNumber);
+		 for (Feature feature : features) {
+			Map<String, String> map = feature.getTestStatsMap();
+			passed = passed + Long.parseLong(map.get("PASSED"));
+			failed = failed + Long.parseLong(map.get("FAILED"));
+			skipped = skipped + Long.parseLong(map.get("SKIPPED"));
+		 }
+		 Map<String, String> map = new HashMap<>();
+		 map.put("buildNumber", buildNumber);
+		 map.put("passed", passed + "");
+		 map.put("failed", failed + "");
+		 map.put("skipped", skipped + "");
+		 list.add(map);
+	  }
+	  return list;
    }
 
    @Override
@@ -136,9 +156,9 @@ public class ResultsServiceImpl implements ResultsService {
 		 }
 	  }
 	  Map<String, String> statsmap = new HashMap<String, String>();
-	  statsmap.put("Passed", String.valueOf(passed));
-	  statsmap.put("Failed", String.valueOf(failed));
-	  statsmap.put("Skipped", String.valueOf(skipped));
+	  statsmap.put("PASSED", String.valueOf(passed));
+	  statsmap.put("FAILED", String.valueOf(failed));
+	  statsmap.put("SKIPPED", String.valueOf(skipped));
 	  return statsmap;
 
    }

@@ -4,6 +4,7 @@ import com.vigil.automation.entity.cucumber.Feature;
 import com.vigil.automation.exceptions.ResourceNotFoundException;
 import com.vigil.automation.service.ResultsService;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class ResultsController {
    }
 
    @GetMapping(value = "/getExecutedBuildsByModuleName")
-   public List<String> getExecutedBuildsByModuleName(@RequestParam String moduleName) {
+   public List<Map<String, String>> getExecutedBuildsByModuleName(@RequestParam String moduleName) {
 	  logger.info("Getting Executed Builds For Module {}", moduleName);
 	  return service.getExecutedBuildsByModuleName(moduleName);
    }

@@ -21,7 +21,7 @@ public interface ResultsService {
 
    List<String> getAllModuleNamesList();
 
-   List<String> getExecutedBuildsByModuleName(String moduleName);
+   List<Map<String, String>> getExecutedBuildsByModuleName(String moduleName);
 
    List<Feature> getTestResultByModuleNameAndBuildNumber(String moduleName, String buildNumber);
 
