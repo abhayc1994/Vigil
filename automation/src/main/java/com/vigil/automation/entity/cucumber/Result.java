@@ -10,4 +10,5 @@ import lombok.Setter;
 public class Result{
     private long duration;
     private String status;
+    private String error_message;
 }

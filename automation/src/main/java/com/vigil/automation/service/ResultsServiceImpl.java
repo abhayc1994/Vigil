@@ -87,10 +87,11 @@ public class ResultsServiceImpl implements ResultsService {
 	  List<Feature> results = resultsRepository.findResultsByModuleName(moduleName);
 	  List<String> buildNumbers = results.stream().map(Feature::getBuildNumber)
 		  .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
-	  long passed = 0;
-	  long failed = 0;
-	  long skipped = 0;
+
 	  for (String buildNumber : buildNumbers) {
+		 long passed = 0;
+		 long failed = 0;
+		 long skipped = 0;
 		 List<Feature> features = resultsRepository.findResultsByBuildNumber(buildNumber);
 		 for (Feature feature : features) {
 			Map<String, String> map = feature.getTestStatsMap();

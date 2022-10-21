@@ -83,7 +83,7 @@ public class JsonBuilder implements EventListener {
    private static final String uri = "http://localhost:8080/results/create";
    ;
    private static final String runID = null;
-   private static String buildNumber = "2";
+   private static String buildNumber = "3";
    private static final String user = "vigil";
    private static final String password = "vigil@123";
 
@@ -111,9 +111,6 @@ public class JsonBuilder implements EventListener {
 
    private void finishReportAfterTest(TestCaseFinished event) {
 	  Throwable exception = event.getResult().getError();
-	  if (exception != null) {
-//		 this.featureMaps.add(this.createDummyFeatureForFailure(event));
-	  }
 	  List<LinkedHashMap<String, Object>> maps = this.featureMaps;
 	  List<Feature> results = updateIDs();
 	  results.forEach(result -> {
@@ -378,6 +375,7 @@ public class JsonBuilder implements EventListener {
    }
 
    private LinkedHashMap<String, Object> createMatchMap(TestStep step, Result result) {
+
 	  LinkedHashMap<String, Object> matchMap = new LinkedHashMap();
 	  if (step instanceof PickleStepTestStep) {
 		 PickleStepTestStep testStep = (PickleStepTestStep) step;

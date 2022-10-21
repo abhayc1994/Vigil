@@ -27,7 +27,6 @@ public class Steps {
    }
    @Then("Click on Release NOA and enter debtor details and save")
    public void click_on_release_noa_and_enter_debtor_details_and_save() {
-      Assert.assertTrue(false);
    }
 
    @Given("user logged into Onboarding")
@@ -191,7 +190,8 @@ public class Steps {
    }
 
    @Then("Below Tabs should be available to the user")
-   public void belowTabsShouldBeAvailableToTheUser() {
+   public void belowTabsShouldBeAvailableToTheUser(DataTable da) {
+      Assert.assertTrue(false);
    }
 
    @Then("Below Accounting Tab should be Journal Entry Tab")
