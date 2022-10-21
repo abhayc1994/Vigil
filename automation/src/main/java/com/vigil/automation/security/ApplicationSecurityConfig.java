@@ -34,7 +34,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
    @Bean
    CorsConfigurationSource corsConfigurationSource() {
 	  CorsConfiguration configuration = new CorsConfiguration();
-	  configuration.setAllowedOrigins(Arrays.asList("https://vigil-be.herokuapp.com/"));
+	  configuration.setAllowedOrigins(Arrays.asList("https://vigil-be.herokuapp.com"));
 	  configuration.setAllowedMethods(
 		  Arrays.asList("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"));
 	  configuration.setAllowedHeaders(
