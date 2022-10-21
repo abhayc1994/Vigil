@@ -7,11 +7,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.Assert;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 @CucumberContextConfiguration
-public class Steps {
+public class TestSteps {
    @Then("Select a record from the list")
    public void select_a_record_from_the_list() {
    }
