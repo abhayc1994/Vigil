@@ -16,7 +16,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
    @Override
    protected void configure(HttpSecurity httpSecurity) throws Exception {
-	  httpSecurity.cors().disable()
+	  httpSecurity
 		  .authorizeRequests()
 		  .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		  .anyRequest()
