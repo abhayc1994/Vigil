@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 	features = "src/test/resources/",
 	plugin = {
 		"com.vigil.automation.plugin.cucumber.JsonBuilder:target/cucumber-reports/Cucumber.json"},
-	tags = "@EDGe"
+	tags = "@EBank"
 )
 @RunWith(Cucumber.class)
 public class VigilRunner {

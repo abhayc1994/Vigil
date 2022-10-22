@@ -80,7 +80,7 @@ public class JsonBuilder implements EventListener {
    private LinkedHashMap<String, Object> currentTestCaseMap;
    private List<LinkedHashMap<String, Object>> currentStepsList;
    private LinkedHashMap<String, Object> currentStepOrHookMap;
-   private static final String uri = "http://localhost:8080/results/create";
+   private static final String uri = "https://vigil-be.herokuapp.com/results/create";
    ;
    private static final String runID = null;
    private static String buildNumber = "3";
