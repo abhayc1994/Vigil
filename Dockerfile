@@ -1,3 +1,4 @@
-FROM openjdk:18
-COPY automation/target/automation-0.0.1-SNAPSHOT.jar /app
-CMD ["java", "-jar", "automation-0.0.1-SNAPSHOT.jar"]
+FROM openjdk:8-jdk-alpine
+ARG JAR_FILE=/automation/target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
